@@ -10,7 +10,11 @@ Repo de trabajo: GitHub 5yhmnb4cch-bot/img-temp (público: acá NO van precios, 
 1. Leer `_sistema/marcas.md` y `_sistema/publicados.csv`. Revisar en Metricool (getScheduledPosts) que mañana no haya posteos ya programados; si hay, no duplicar.
 2. Elegir 2 productos (reglas de variedad de marcas.md: no repetir marca de auto ni de pieza el mismo día; no repetir categoría ni marca de pieza en días seguidos; solo autos que se venden en Argentina; nada de RS6/RS7; pedidos especiales vigentes).
    Buscar el código GF en `_sistema/indice_gf.csv` (por modelo + nombre_original). Si no tiene código, avisarle a Facu en el mensaje para que lo cargue (y poner "Ref. GF-____").
-3. Fotos: desde la página del proveedor. Sitios accesibles desde la nube: ind-distribution.com (Shopify: `<url-producto>.json`; reescribir `https://cdn.shopify.com/s/files/1/<n>/<n>/<n>/(products|files)/X` → `https://ind-distribution.com/cdn/shop/(products|files)/X`), 034motorsport.com (páginas de producto, imágenes en "full":"…jpg"), pp-performance.de. ECS, Novitec, iPE y Baan Velgen están bloqueados desde la nube: para esas marcas elegir otro producto.
+3. Fotos: desde la página del proveedor. Sitios accesibles desde la nube:
+   - ind-distribution.com (Shopify: `<url-producto>.json`; reescribir `https://cdn.shopify.com/s/files/1/<n>/<n>/<n>/(products|files)/X` → `https://ind-distribution.com/cdn/shop/(products|files)/X`).
+   - baanvelgen.com (Shopify; distribuidor oficial de iPE y vende Novitec): buscar con `https://baanvelgen.com/search/suggest.json?q=<texto>&resources%5Btype%5D=product&resources%5Blimit%5D=10`, ficha en `/products/<handle>.json`, imágenes reescritas a `https://baanvelgen.com/cdn/shop/(products|files)/X`. Usarlo para posteos de iPE (escapes) y Novitec (Ferrari, Lamborghini, McLaren).
+   - 034motorsport.com (páginas de producto, imágenes en "full":"…jpg") y pp-performance.de.
+   - ECS Tuning NO se puede desde la nube (su web bloquea accesos automáticos). Para productos ECS, elegir el mismo tipo de pieza de otro proveedor o dejarlo para las tandas armadas con la compu de Facu.
    - Sin marcas de agua IND/ECS (pintar de blanco el rincón en fotos de fondo blanco; si la foto tiene fondo, recortar o descartar). Patentes legibles: difuminar.
    - Portada: el AUTO con la pieza. Revisar CADA slide (pieza entera, bien encuadrada, nada cortado).
 4. Carrusel con `python3 _sistema/carrusel.py spec.json out/` (copiar lobo.svg junto a carrusel.py). 5 slides:
