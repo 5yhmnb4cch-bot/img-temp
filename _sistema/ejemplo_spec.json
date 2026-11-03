@@ -1,0 +1,7 @@
+{"auto":"BMW M4 G82 Coupé","titulo":["Alerón","ducktail"],"sub":"Fibra de carbono pre-preg · MHC Plus",
+"slides":[
+ {"tipo":"portada","img":"img/ducktail/03_ok.jpg","pos":"50% 40%"},
+ {"tipo":"doble","imgs":["img/ducktail/02.jpg","img/ducktail/04.jpg"],"kicker":"Diseño","cap":"Se funde con la línea del baúl"},
+ {"tipo":"doble","imgs":["img/ducktail/00_ok.jpg","img/ducktail/05_ok.jpg"],"fondo":["blanco","blanco"],"kicker":"Terminación","cap":"Carbono 2x2 con laca de alto brillo"},
+ {"tipo":"cierre","img":"img/ducktail/03_ok.jpg","pos":"50% 40%"}
+]}
