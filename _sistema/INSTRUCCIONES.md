@@ -5,18 +5,25 @@ Repo de trabajo: GitHub 5yhmnb4cch-bot/img-temp (público: acá NO van precios, 
 - `_sistema/` → estas instrucciones, marcas.md (reglas de marcas/autos/variedad), publicados.csv, carrusel.py + lobo.svg (plantilla), ejemplo_spec.json, indice_gf.csv (códigos GF: codigo, marca_auto, modelo, articulo, seccion, nombre_original).
 - `posts/<fecha>/` → slides temporales. Se borran apenas Metricool las toma.
 
-## MODO ACTUAL (desde nov-2026): mes ya programado → cada noche solo VISTA PREVIA
-Del 4/11 al 3/12 los 60 posteos YA están programados en Metricool (ver publicados.csv, "(programado)").
-Hay 8 carruseles de reserva listos en `backups/<A1|A2|B1|B2|V1|V2|M1|M2>/` (slides NN.jpg + caption.txt + meta.json), sin programar.
-Cada noche:
-1. getScheduledPosts de MAÑANA (00:00–23:59, America/Buenos_Aires).
-2. Si están los 2: bajar las 2 portadas+slides (URLs static.metricool.com, curl), armar una tira de miniaturas por posteo, PushNotification corta ("Mañana: <producto 10hs> y <producto 18hs>") y SendUserMessage + SendUserFile con las tiras, horario y descripción completa de cada uno. Recordar: si no responde, salen solos.
-3. Si falta alguno (borrado o rechazado): reemplazar con un backup que respete las reglas de variedad (no misma marca de pieza que el otro posteo del día ni que los del día anterior/siguiente; preferir otra marca de auto que el otro posteo del día). Subir sus slides a `posts/<fecha>/`, programar, borrar `posts/<fecha>`, borrar la carpeta del backup usado y anotarlo en publicados.csv. Si no queda backup que sirva, armar uno nuevo con el proceso de abajo.
-4. Si Facu pidió en la conversación un cambio o rechazó un posteo: rehacer o reemplazar (backup primero) y updateScheduledPost / createScheduledPost.
-5. Cuando se terminen los programados (después del 3/12), volver al proceso de abajo (armar 2 por noche), o armar otro lote mensual si Facu lo pide.
-Notas: GF-2377 (downpipe 034, 25/11) es pieza de competición. GF-3890/3891/3892 son códigos nuevos que hay que cargar en la base Excel.
+## MODO ACTUAL (desde 8-nov-2026): UN posteo DÍA POR MEDIO a las 18:00 (pedido de Facu: Metricool tiene tope de publicaciones)
+- Cadencia: 1 posteo cada 2 días, 18:00 (America/Buenos_Aires). Días de publicación: 10/11, 12/11, 14/11... (días pares desde el 10/11, siempre +2).
+- Los promos con fecha fija (Black Friday, ej. 9/11 21:00) quedan en su fecha.
+- Los 50 posteos que estaban programados 2 por día (9/11 al 3/12) se RE-ESPACIAN sin perder ninguno: ver `_sistema/calendario_dia_por_medio.csv`
+  (id Metricool, fecha_original, fecha_nueva, estado). Para cada fila "pendiente": getScheduledPosts del rango original → updateScheduledPost con
+  TODO el contenido igual y solo publicationDate/date cambiados a fecha_nueva → marcar estado "hecho" (+ id nuevo) en el CSV y actualizar publicados.csv.
+  Hacerlo apenas Metricool esté conectado (prioridad 1, antes que la vista previa). Si no está conectado, avisar a Facu por push que hay que reconectarlo.
+- Si Metricool NO deja programar/actualizar más (tope del plan): no forzar. Preparar el posteo igual (slides + descripción) y mandárselo a Facu
+  (SendUserFile con las slides + SendUserMessage con la descripción y fecha/hora) para que lo suba él desde Meta Business Suite. Avisar por push.
+- Cada noche: mirar si MAÑANA es día de publicación (según el calendario). Si no lo es, no avisar nada. Si lo es: vista previa como antes
+  (tira de miniaturas + descripción, push corta "Mañana 18hs: <producto>"). Las imágenes de static.metricool.com están bloqueadas desde la nube:
+  sacar las slides del historial git (`git log --all --name-only` → `git show <commit>:posts/...`) o de backups/.
+- Si falta el posteo de un día de publicación: cubrirlo con un backup de `backups/` (reglas de variedad), si no hay, armar uno nuevo con el proceso de abajo.
+- Cuando se terminen los programados (~16/2/2027), seguir armando 1 posteo día por medio con el proceso de abajo.
+- Reglas de variedad: con un solo posteo por día, no repetir marca de pieza ni categoría entre dos posteos consecutivos.
+Notas: GF-2377 (downpipe 034) es pieza de competición. GF-3890/3891/3892 son códigos nuevos que hay que cargar en la base Excel.
+Hay 8 carruseles de reserva en `backups/<A1|A2|B1|B2|V1|V2|M1|M2>/` (slides NN.jpg + caption.txt + meta.json), sin programar.
 
-## Proceso para ARMAR posteos nuevos (mañana 10:00 y 18:00)
+## Proceso para ARMAR posteos nuevos (1 posteo, 18:00, día por medio)
 0. Preparar: add_repo (owner 5yhmnb4cch-bot, repo img-temp, access push) → `git clone --depth 1 https://github.com/5yhmnb4cch-bot/img-temp /home/claude/img-temp` (timeout largo). git config user.name "Goodfellas", user.email "facuamoedo@gmail.com". `pip install openpyxl` si hace falta; Playwright y Chromium ya están.
 1. Leer `_sistema/marcas.md` y `_sistema/publicados.csv`. Revisar en Metricool (getScheduledPosts) que mañana no haya posteos ya programados; si hay, no duplicar.
 2. Elegir 2 productos (reglas de variedad de marcas.md: no repetir marca de auto ni de pieza el mismo día; no repetir categoría ni marca de pieza en días seguidos; solo autos que se venden en Argentina; nada de RS6/RS7; pedidos especiales vigentes).
