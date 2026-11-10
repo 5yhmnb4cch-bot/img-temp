@@ -12,13 +12,15 @@ Repo de trabajo: GitHub 5yhmnb4cch-bot/img-temp (público: acá NO van precios, 
   (id Metricool, fecha_original, fecha_nueva, estado). Para cada fila "pendiente": getScheduledPosts del rango original → updateScheduledPost con
   TODO el contenido igual y solo publicationDate/date cambiados a fecha_nueva → marcar estado "hecho" (+ id nuevo) en el CSV y actualizar publicados.csv.
   Hacerlo apenas Metricool esté conectado (prioridad 1, antes que la vista previa). Si no está conectado, avisar a Facu por push que hay que reconectarlo.
+  ✅ HECHO el 9/11/2026 ~21hs: los 49 posteos ya están re-espaciados (10/11 al 14/2/2027, todos 18:00). El Akrapovic C63 se publicó el 9/11 18:00, así que se corrieron todos un lugar (sin hueco) y se invirtió el orden de los dos primeros para no repetir 034 dos días seguidos (BF 034 el 9/11). Último programado: 14/2/2027 → desde el 16/2 armar posteos nuevos.
+  Ojo: el 9/11 10:00 Metricool dio error "The Instagram account is restricted" (el de 18:00 y el de 21:00 salieron bien). Si se repite, avisar a Facu.
 - Si Metricool NO deja programar/actualizar más (tope del plan): no forzar. Preparar el posteo igual (slides + descripción) y mandárselo a Facu
   (SendUserFile con las slides + SendUserMessage con la descripción y fecha/hora) para que lo suba él desde Meta Business Suite. Avisar por push.
 - Cada noche: mirar si MAÑANA es día de publicación (según el calendario). Si no lo es, no avisar nada. Si lo es: vista previa como antes
   (tira de miniaturas + descripción, push corta "Mañana 18hs: <producto>"). Las imágenes de static.metricool.com están bloqueadas desde la nube:
   sacar las slides del historial git (`git log --all --name-only` → `git show <commit>:posts/...`) o de backups/.
 - Si falta el posteo de un día de publicación: cubrirlo con un backup de `backups/` (reglas de variedad), si no hay, armar uno nuevo con el proceso de abajo.
-- Cuando se terminen los programados (~16/2/2027), seguir armando 1 posteo día por medio con el proceso de abajo.
+- Cuando se terminen los programados (último 14/2/2027, el próximo a armar es el 16/2/2027), seguir armando 1 posteo día por medio con el proceso de abajo.
 - Reglas de variedad: con un solo posteo por día, no repetir marca de pieza ni categoría entre dos posteos consecutivos.
 Notas: GF-2377 (downpipe 034) es pieza de competición. GF-3890/3891/3892 son códigos nuevos que hay que cargar en la base Excel.
 Hay 8 carruseles de reserva en `backups/<A1|A2|B1|B2|V1|V2|M1|M2>/` (slides NN.jpg + caption.txt + meta.json), sin programar.
