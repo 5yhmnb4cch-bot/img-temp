@@ -5,27 +5,27 @@ Repo de trabajo: GitHub 5yhmnb4cch-bot/img-temp (público: acá NO van precios, 
 - `_sistema/` → estas instrucciones, marcas.md (reglas de marcas/autos/variedad), publicados.csv, carrusel.py + lobo.svg (plantilla), ejemplo_spec.json, indice_gf.csv (códigos GF: codigo, marca_auto, modelo, articulo, seccion, nombre_original).
 - `posts/<fecha>/` → slides temporales. Se borran apenas Metricool las toma.
 
-## MODO ACTUAL (desde 8-nov-2026): UN posteo DÍA POR MEDIO a las 18:00 (pedido de Facu: Metricool tiene tope de publicaciones)
-- Cadencia: 1 posteo cada 2 días, 18:00 (America/Buenos_Aires). Días de publicación: 10/11, 12/11, 14/11... (días pares desde el 10/11, siempre +2).
-- Los promos con fecha fija (Black Friday, ej. 9/11 21:00) quedan en su fecha.
-- Los 50 posteos que estaban programados 2 por día (9/11 al 3/12) se RE-ESPACIAN sin perder ninguno: ver `_sistema/calendario_dia_por_medio.csv`
-  (id Metricool, fecha_original, fecha_nueva, estado). Para cada fila "pendiente": getScheduledPosts del rango original → updateScheduledPost con
-  TODO el contenido igual y solo publicationDate/date cambiados a fecha_nueva → marcar estado "hecho" (+ id nuevo) en el CSV y actualizar publicados.csv.
-  Hacerlo apenas Metricool esté conectado (prioridad 1, antes que la vista previa). Si no está conectado, avisar a Facu por push que hay que reconectarlo.
-  ✅ HECHO el 9/11/2026 ~21hs: los 49 posteos ya están re-espaciados (10/11 al 14/2/2027, todos 18:00). El Akrapovic C63 se publicó el 9/11 18:00, así que se corrieron todos un lugar (sin hueco) y se invirtió el orden de los dos primeros para no repetir 034 dos días seguidos (BF 034 el 9/11). Último programado: 14/2/2027 → desde el 16/2 armar posteos nuevos.
-  Ojo: el 9/11 10:00 Metricool dio error "The Instagram account is restricted" (el de 18:00 y el de 21:00 salieron bien). Si se repite, avisar a Facu.
-- Si Metricool NO deja programar/actualizar más (tope del plan): no forzar. Preparar el posteo igual (slides + descripción) y mandárselo a Facu
-  (SendUserFile con las slides + SendUserMessage con la descripción y fecha/hora) para que lo suba él desde Meta Business Suite. Avisar por push.
-- Cada noche: mirar si MAÑANA es día de publicación (según el calendario). Si no lo es, no avisar nada. Si lo es: vista previa como antes
-  (tira de miniaturas + descripción, push corta "Mañana 18hs: <producto>"). Las imágenes de static.metricool.com están bloqueadas desde la nube:
-  sacar las slides del historial git (`git log --all --name-only` → `git show <commit>:posts/...`) o de backups/.
-- Si falta el posteo de un día de publicación: cubrirlo con un backup de `backups/` (reglas de variedad), si no hay, armar uno nuevo con el proceso de abajo.
-- Cuando se terminen los programados (último 14/2/2027, el próximo a armar es el 16/2/2027), seguir armando 1 posteo día por medio con el proceso de abajo.
-- Reglas de variedad: con un solo posteo por día, no repetir marca de pieza ni categoría entre dos posteos consecutivos.
+## MODO ACTUAL (desde 17-nov-2026): TOPE GRATIS DE METRICOOL = 20 PUBLICACIONES POR MES, repartidas en todo el mes
+- Metricool (plan gratis) publica como máximo 20 posteos por mes calendario. En noviembre se llegó al tope el 12/11: desde el 13/11 todo
+  daba ERROR "You have reached your Metricool account limit." (pedido de Facu el 17/11: repartir el cupo mensual en todo el mes).
+- El 17/11 se re-programaron los 47 pendientes (incluidos los 2 que fallaron: Eventuri A35 GF-1128 y 034 Handling GF-2436) con este patrón,
+  manteniendo el orden (variedad OK), todos 18:00:
+  · Dic 2026 (20): 1,2,4,5,7,8,10,11,13,14,16,18,19,21,22,24,25,27,28,30
+  · Ene 2027 (20): mismos días
+  · Feb 2027 (7 hasta ahora): 1,2,3,5,6,8,9 → completar febrero con 13 nuevos en 11,12,14,15,16,18,19,21,22,24,25,26,28 (floor(i*28/20)+1).
+  Fórmula para cualquier mes de D días: día = floor(i*D/20)+1, i=0..19. NUNCA más de 20 posteos (no borradores) en un mismo mes, contando promos.
+- Del 13/11 al 30/11 no se puede publicar nada por Metricool (cupo agotado). El promo BF COBB (13/11–30/11) quedó en ERROR y no salió.
+- Cada noche: mirar en Metricool si MAÑANA hay posteo. Si no hay, no avisar nada. Si hay: vista previa (tira de miniaturas + descripción,
+  push corta "Mañana 18hs: <producto>"). Las imágenes de static.metricool.com están bloqueadas desde la nube: sacar las slides del historial git
+  (`git fetch --unshallow`; `git log --all --name-only` → `git show <commit>:posts/...`; las del lote BMW están en commit 3445a6f posts/B/<fecha_original>) o de backups/.
+- El 1/12 (primer posteo del mes nuevo) confirmar que salió PUBLISHED; si vuelve a dar error de límite, avisar a Facu por push (el cupo podría no ser por mes calendario).
+- Si falta el posteo de un día del patrón: cubrirlo con un backup de `backups/` (reglas de variedad); si no hay, armar uno nuevo con el proceso de abajo.
+- Reglas de variedad: no repetir marca de pieza ni categoría entre dos posteos consecutivos.
+- (Histórico: del 8/11 al 17/11 fue "día por medio 18:00"; ver calendario_dia_por_medio.csv.)
 Notas: GF-2377 (downpipe 034) es pieza de competición. GF-3890/3891/3892 son códigos nuevos que hay que cargar en la base Excel.
 Hay 8 carruseles de reserva en `backups/<A1|A2|B1|B2|V1|V2|M1|M2>/` (slides NN.jpg + caption.txt + meta.json), sin programar.
 
-## Proceso para ARMAR posteos nuevos (1 posteo, 18:00, día por medio)
+## Proceso para ARMAR posteos nuevos (1 posteo, 18:00, en los días del patrón de 20 por mes)
 0. Preparar: add_repo (owner 5yhmnb4cch-bot, repo img-temp, access push) → `git clone --depth 1 https://github.com/5yhmnb4cch-bot/img-temp /home/claude/img-temp` (timeout largo). git config user.name "Goodfellas", user.email "facuamoedo@gmail.com". `pip install openpyxl` si hace falta; Playwright y Chromium ya están.
 1. Leer `_sistema/marcas.md` y `_sistema/publicados.csv`. Revisar en Metricool (getScheduledPosts) que mañana no haya posteos ya programados; si hay, no duplicar.
 2. Elegir 2 productos (reglas de variedad de marcas.md: no repetir marca de auto ni de pieza el mismo día; no repetir categoría ni marca de pieza en días seguidos; solo autos que se venden en Argentina; nada de RS6/RS7; pedidos especiales vigentes).
